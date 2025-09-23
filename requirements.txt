@@ -1,0 +1,4 @@
+# requirements.txt
+Flask==3.0.0
+gunicorn==22.0.0
+google-cloud-storage==2.14.0

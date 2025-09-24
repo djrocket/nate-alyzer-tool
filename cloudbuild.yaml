@@ -1,0 +1,14 @@
+# cloudbuild.yaml
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/nate-digital-twin/cloud-run-source-deploy/youtube-transcript-fetcher', '.']
+
+# Specify the log bucket for this build
+logsBucket: 'gs://nate-digital-twin-build-logs'
+
+# Specify the images to push to Artifact Registry upon successful build
+images: ['us-central1-docker.pkg.dev/nate-digital-twin/cloud-run-source-deploy/youtube-transcript-fetcher']
+
+# Optional: Set the logging option
+options:
+  logging: GCS_ONLY

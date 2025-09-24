@@ -1,35 +1,30 @@
-# app.py - COMPLETELY NEW FILENAMES AND FUNCTION NAMES
+# app.py - FINAL CORRECT VERSION
 
 import os
 from flask import Flask, request, jsonify
 from google.cloud import storage
 
-# The Flask object must be named 'app' for Gunicorn to find it.
 app = Flask(__name__)
 
-# Initialize GCS Client
 storage_client = storage.Client()
-# Get Bucket Name from Environment Variable
 CACHE_BUCKET_NAME = os.environ.get("GCS_BUCKET_NAME")
 
 @app.route("/", methods=["POST", "OPTIONS"])
-def handle_request(req): # Renamed function, renamed parameter
-    """The new, primary entry point for handling requests."""
+def handle_request(request): # Standard pattern: request is passed as an argument
+    """The primary entry point for handling requests."""
     
-    # Set CORS headers
     headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
     }
-    if req.method == 'OPTIONS':
+    if request.method == 'OPTIONS':
         return ('', 204, headers)
 
-    # --- CORE LOGIC ---
     if not CACHE_BUCKET_NAME:
         return jsonify({"error": "CRITICAL: GCS_BUCKET_NAME environment variable is not set."}), 500, headers
 
-    data = req.get_json()
+    data = request.get_json()
     if not data or 'url' not in data:
         return jsonify({"error": "Missing JSON payload or 'url' key."}), 400, headers
 
@@ -47,9 +42,8 @@ def handle_request(req): # Renamed function, renamed parameter
 
         if blob.exists():
             cached_transcript = blob.download_as_text()
-            return jsonify({"transcript": cached_transcript, "source": "cache_v2"}), 200, headers # Added _v2 to source
+            return jsonify({"transcript": cached_transcript, "source": "cache_final_version"}), 200, headers
         else:
-            # In this simple version, we just report a miss.
             return jsonify({"status": f"Cache MISS for video ID: {video_id}. Live fetch disabled."}), 404, headers
 
     except Exception as e:

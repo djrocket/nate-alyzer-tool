@@ -1,14 +1,14 @@
 steps:
-# Step 1: Build the container image
-- name: 'gcr.io/cloud-builders/docker'
+# Step 1: Build the container image using the AR builder
+- name: 'us-docker.pkg.dev/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/nate-digital-twin/cloud-run-source-deploy/youtube-transcript-fetcher', '.']
 
-# Step 2: Push the container image to Artifact Registry
-- name: 'gcr.io/cloud-builders/docker'
+# Step 2: Push the container image to Artifact Registry using the AR builder
+- name: 'us-docker.pkg.dev/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/nate-digital-twin/cloud-run-source-deploy/youtube-transcript-fetcher']
 
-# Step 3: Deploy the container image to Cloud Run
-- name: 'gcr.io/google-cloud-sdk/gcloud'
+# Step 3: Deploy to Cloud Run using the AR gcloud builder
+- name: 'us-docker.pkg.dev/cloud-builders/gcloud'
   args:
   - 'run'
   - 'deploy'

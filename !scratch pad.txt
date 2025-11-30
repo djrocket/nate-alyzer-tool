@@ -1,0 +1,23 @@
+created bucket for anthologies: nate-digital-twin-anthologies-djr
+created bucket to store nate-digital-twin-transcript-cache
+
+service account for the fetcher cloud run service: 134885012683-compute@developer.gserviceaccount.com
+
+
+Invoke-WebRequest -Uri 'https://youtube-transcript-fetcher-134885012683.us-central1.run.app' -Method POST -ContentType 'application/json' -Body '{"url": "https://www.youtube.com/watch?v=D92aDGVFcRE"}'
+
+gcloud run deploy youtube-transcript-fetcher --image us-central1-docker.pkg.dev/nate-digital-twin/cloud-run-source-deploy/youtube-transcript-fetcher --region us-central1 --allow-unauthenticated --memory 1Gi --timeout 120s
+
+
+URL for the retriever:
+https://us-central1-nate-digital-twin.cloudfunctions.net/gcs-transcript-retriever
+
+URL for the processor:
+https://us-central1-nate-digital-twin.cloudfunctions.net/transcript-processor-and-classifier
+
+URL for the updater:
+https://us-central1-nate-digital-twin.cloudfunctions.net/anthology-updater
+
+gcloud auth application-default login
+
+

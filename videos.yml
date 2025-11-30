@@ -1,0 +1,7 @@
+# List of YouTube video URLs or 11-char IDs to ingest.
+# Add one per line as a YAML list.
+
+- https://www.youtube.com/watch?v=8W_IUoSMvu0
+- https://www.youtube.com/watch?v=X7PWBlxJV1Q
+# - YYYYYYYYYYY
+

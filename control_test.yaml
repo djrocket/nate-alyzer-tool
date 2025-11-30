@@ -1,0 +1,8 @@
+# control_test.yaml
+steps:
+- name: 'us-docker.pkg.dev/cloud-builders/docker'
+  entrypoint: 'echo'
+  args: ['Control group test successful.']
+options:
+  pool:
+    name: 'projects/nate-digital-twin/locations/us-central1/workerPools/nate-alyzer-private-pool'

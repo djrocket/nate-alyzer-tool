@@ -1,0 +1,6 @@
+# role-definition.yaml
+title: "Gemini Predict Only"
+description: "A custom role that grants only the permission to call the predict endpoint."
+stage: "GA"
+includedPermissions:
+- aiplatform.endpoints.predict

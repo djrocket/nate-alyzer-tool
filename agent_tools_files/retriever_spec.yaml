@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: GCS Transcript Retriever
+  version: 1.0.0
+  description: Retrieves the raw text of a video transcript from a GCS bucket.
+servers:
+  - url: https://us-central1-nate-digital-twin.cloudfunctions.net/gcs-transcript-retriever
+paths:
+  /:
+    post:
+      summary: Retrieve Transcript
+      description: Fetches the raw transcript text for a given video_id.
+      operationId: retrieveTranscript
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                video_id:
+                  type: string
+                  description: The unique ID of the video.
+              required:
+                - video_id
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transcript_text:
+                    type: string
+        '404':
+          description: Transcript not found

@@ -1,0 +1,27 @@
+# minimal_test.yaml
+steps:
+# Step 1: Generate an OAuth2 access token and save it to a file in the shared workspace.
+- name: 'us-docker.pkg.dev/cloud-builders/gcloud'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - 'gcloud auth print-access-token manual-cloud-build-sa@nate-digital-twin.iam.gserviceaccount.com > /workspace/token.txt'
+
+# Step 2: Use the token from the file to perform an explicit docker login.
+- name: 'us-docker.pkg.dev/cloud-builders/docker'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - 'cat /workspace/token.txt | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev'
+
+# Step 3: The original test. This step will now run in an authenticated context.
+- name: 'us-docker.pkg.dev/cloud-builders/docker'
+  entrypoint: 'echo'
+  args: ['Minimal test step executed.']
+
+# Explicitly define the service account to run this build.
+serviceAccount: 'projects/nate-digital-twin/serviceAccounts/manual-cloud-build-sa@nate-digital-twin.iam.gserviceaccount.com'
+
+# Add this block back in to satisfy the API requirement for explicit logging.
+options:
+  logging: CLOUD_LOGGING_ONLY

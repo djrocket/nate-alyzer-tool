@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: Transcript Processor and Classifier
+  version: 1.0.0
+  description: A tool that distills a raw transcript into a structured, high-signal document and classifies it.
+servers:
+  - url: https://us-central1-nate-digital-twin.cloudfunctions.net/transcript-processor-and-classifier
+paths:
+  /:
+    post:
+      summary: Distill and Classify Transcript
+      description: Analyzes raw transcript text to generate a Core Thesis and Key Concepts, then classifies the entire document into a single predefined theme. This is the main processing step.
+      operationId: processAndClassifyTranscript
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transcript_text:
+                  type: string
+                  description: The raw text of the transcript.
+              required:
+                - transcript_text
+      responses:
+        '200':
+          description: Successful processing and classification
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processed_transcript:
+                    type: string
+                  theme:
+                    type: string

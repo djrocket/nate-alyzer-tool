@@ -1,0 +1,8 @@
+# requirements.txt
+google-cloud-aiplatform[agent_engines,adk]
+langchain-google-vertexai
+langchain-core
+langgraph
+requests
+langchain
+langchain_anthropic

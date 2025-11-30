@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Anthology Updater
+  version: 1.0.0
+  description: A tool that saves a processed transcript to the correct master anthology file.
+servers:
+  - url: https://us-central1-nate-digital-twin.cloudfunctions.net/anthology-updater
+paths:
+  /:
+    post:
+      summary: Save Transcript to Anthology
+      description: Appends the final, processed transcript to the correct thematic anthology file in GCS. This is the final step in the pipeline and should only be called after the transcript has been processed and classified.
+      operationId: updateAnthology
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processed_transcript:
+                  type: string
+                theme:
+                  type: string
+                video_id:
+                  type: string
+              required:
+                - processed_transcript
+                - theme
+                - video_id
+      responses:
+        '200':
+          description: Successful update or duplicate skipped
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [appended, skipped_duplicate]

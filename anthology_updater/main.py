@@ -86,6 +86,26 @@ def anthology_updater(request):
         # Upload the entire updated content back to the blob.
         blob.upload_from_string(updated_content, content_type='text/markdown')
 
+        # --- FIRESTORE UPDATE ---
+        # Mark as COMPLETED in the central registry
+        try:
+            from google.cloud import firestore
+            # We assume the cloud function runs in the same project, or we can infer it.
+            # Ideally, pass project explicitly or let it auto-discover.
+            db = firestore.Client() 
+            doc_ref = db.collection("processed_videos").document(video_id)
+            doc_ref.set({
+                "status": "COMPLETED",
+                "completed_at": firestore.SERVER_TIMESTAMP,
+                "theme": theme,
+                "anthology_file": filename,
+                "video_id": video_id
+            }, merge=True)
+            print(f"Updated Firestore status for {video_id} to COMPLETED")
+        except Exception as e:
+            # Don't fail the request if Firestore update fails, just log it.
+            print(f"Warning: Failed to update Firestore status: {e}")
+
         return jsonify({"status": "appended", "video_id": video_id, "file": filename}), 200, headers
 
     except Exception as e:

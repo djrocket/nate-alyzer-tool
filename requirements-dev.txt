@@ -1,0 +1,25 @@
+# Local Development Requirements
+# This file consolidates all dependencies needed to run scripts and tests locally.
+# DO NOT use this for Cloud Functions deployment.
+
+# Core GCP
+google-cloud-storage==2.14.0
+google-cloud-firestore==2.14.0
+google-cloud-aiplatform[agent_engines,adk]==1.56.0
+
+# Local Scripts (Ingestion)
+youtube-transcript-api
+pyyaml
+requests
+yt-dlp
+
+# Agent Framework
+langchain-google-vertexai
+langchain-core
+langgraph
+langchain
+langchain_anthropic
+
+# Web/API (if running local server)
+flask==3.0.0
+gunicorn==22.0.0

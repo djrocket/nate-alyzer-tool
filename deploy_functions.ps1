@@ -2,7 +2,7 @@
 $PROJECT_ID = "nate-digital-twin"
 $REGION = "us-central1"
 $TRANSCRIPT_BUCKET = "nate-digital-twin-transcript-cache"
-$ANTHOLOGY_BUCKET = "nate-digital-twin-anthologies"
+$ANTHOLOGY_BUCKET = "nate-digital-twin-anthologies-djr"
 
 Write-Host "--- Starting Deployment for Project: $PROJECT_ID ---" -ForegroundColor Cyan
 
@@ -13,7 +13,8 @@ function Ensure-Bucket ($bucket) {
     if (-not $exists) {
         Write-Host "Creating bucket: $bucket" -ForegroundColor Yellow
         gsutil mb -p $PROJECT_ID -l $REGION gs://$bucket
-    } else {
+    }
+    else {
         Write-Host "Bucket exists." -ForegroundColor Green
     }
 }

@@ -431,7 +431,7 @@ def process_video(engine_resource: str, project: str, location: str, video_id: s
     prompt = (
         f"Here is the transcript for video {video_id}:\n{transcript_text}\n\n"
         f"Analyze the provided transcript to identify the Core Thesis and Key Concepts. "
-        f"Also identify the best anthology theme for this video (e.g. 'AI Strategy & Leadership'). "
+        f"Also identify the best anthology theme for this video. Examples: 'AI Strategy & Leadership', 'Agentic Architectures & Systems', 'AI Engineering & Coding', 'Future of Work & Society'. "
         f"IMPORTANT: Do NOT save the transcript to the anthology. I will handle saving. "
         f"OUTPUT ONLY THE ANALYSIS. DO NOT CALL ANY TOOLS. I WILL FIRE YOU IF YOU CALL SAVE.\n"
         f"OUTPUT FORMAT:\n"
@@ -478,16 +478,16 @@ def main():
             continue
         
         print(f"Processing {vid}...", end="", flush=True)
-        
-        # 0) Check Firestore status
+
+        # 1) Check Firestore (Skip if already COMPLETED)
         if db:
-            doc_ref = db.collection("processed_videos").document(vid)
+            doc_ref = db.collection("video_status").document(vid)
             doc = doc_ref.get()
             if doc.exists:
                 data = doc.to_dict()
                 if data.get("status") == "COMPLETED":
-                    summary_lines.append(f"{vid:<15} | {'Check Firestore':<25} | {'SKIP':<10} | Already COMPLETED")
                     print(" Skipped (Already Completed)")
+                    summary_lines.append(f"{vid:<15} | {'Check Firestore':<25} | {'SKIP':<10} | Already COMPLETED")
                     continue
 
             # Mark as processing
@@ -685,7 +685,26 @@ def main():
                 if db: doc_ref.set({"status": "FAILED", "error": "Anthology Verify Failed"}, merge=True)
                 continue
 
-        # 6) Update Firestore
+        # 6) Upload Transcript to GCS (Triggers Cloud Function, which should skip due to existing entry)
+        try:
+            uri = upload_to_gcs(args.bucket, vid, text, publish_date)
+            
+            # Verify GCS File
+            passed, msg = verify_gcs_upload(args.bucket, vid, publish_date)
+            if passed:
+                summary_lines.append(f"{vid:<15} | {'Verify GCS File':<25} | {'PASS':<10} | {msg}")
+            else:
+                summary_lines.append(f"{vid:<15} | {'Verify GCS File':<25} | {'FAIL':<10} | {msg}")
+                print(" FAILED (GCS Verification)")
+                if db: doc_ref.set({"status": "FAILED", "error": f"GCS Verify Failed: {msg}"}, merge=True)
+                continue # STOP PROCESSING
+        except Exception as e:
+            summary_lines.append(f"{vid:<15} | {'Upload GCS':<25} | {'ERROR':<10} | {e}")
+            print(" FAILED (Upload)")
+            if db: doc_ref.set({"status": "FAILED", "error": str(e)}, merge=True)
+            continue
+
+        # 7) Update Firestore
         if db:
             try:
                 doc_ref.set({

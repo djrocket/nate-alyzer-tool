@@ -1,15 +1,28 @@
-Run started at: 2025-12-05T22:34:03.671554
+Run started at: 2025-12-05T22:57:02.318756
 ============================================================
 VIDEO ID        | STEP                      | STATUS     | DETAILS
 ------------------------------------------------------------
-xZX4KHrqwhM     | Check Firestore           | SKIP       | Already COMPLETED
+xZX4KHrqwhM     | Fetch Date                | PASS       | 2025-06-23
+xZX4KHrqwhM     | Agent Processing          | PASS       | Analyzed & Saved Locally
+xZX4KHrqwhM     | Anthology File            | INFO       | ai-engineering-coding.md
+xZX4KHrqwhM     | Verify Anthology          | PASS       | Found in ai-engineering-coding.md
+xZX4KHrqwhM     | Verify GCS File           | PASS       | Verified
+xZX4KHrqwhM     | Verify Firestore          | PASS       | Status is COMPLETED
 -5zFZznthw0     | Fetch Date                | PASS       | 2025-12-05
-DEBUG: Raw Response Type: <class 'dict'>
-DEBUG: Response Keys: ['response']
-DEBUG: 'response' value type: <class 'str'>
-DEBUG: Parsed stringified value to: <class 'list'>
-DEBUG: Parsed Response Length: 1818
 -5zFZznthw0     | Agent Processing          | PASS       | Analyzed & Saved Locally
 -5zFZznthw0     | Anthology File            | INFO       | ai-strategy-leadership.md
 -5zFZznthw0     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md
+-5zFZznthw0     | Verify GCS File           | PASS       | Verified
 -5zFZznthw0     | Verify Firestore          | PASS       | Status is COMPLETED
+B3rSU7XROrg     | Fetch Date                | PASS       | 2025-12-04
+B3rSU7XROrg     | Agent Processing          | PASS       | Analyzed & Saved Locally
+B3rSU7XROrg     | Anthology File            | INFO       | ai-strategy-leadership.md
+B3rSU7XROrg     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md
+B3rSU7XROrg     | Verify GCS File           | PASS       | Verified
+B3rSU7XROrg     | Verify Firestore          | PASS       | Status is COMPLETED
+4u48pDYxfHc     | Fetch Date                | PASS       | 2025-12-03
+4u48pDYxfHc     | Agent Processing          | PASS       | Analyzed & Saved Locally
+4u48pDYxfHc     | Anthology File            | INFO       | ai-engineering-coding.md
+4u48pDYxfHc     | Verify Anthology          | PASS       | Found in ai-engineering-coding.md
+4u48pDYxfHc     | Verify GCS File           | PASS       | Verified
+4u48pDYxfHc     | Verify Firestore          | PASS       | Status is COMPLETED

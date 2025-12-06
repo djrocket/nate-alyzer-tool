@@ -1,8 +1,16 @@
 # List of YouTube video URLs or 11-char IDs to ingest.
 # Add one per line as a YAML list.
 
-- https://www.youtube.com/watch?v=xZX4KHrqwhM
-#- https://www.youtube.com/watch?v=jW89fT_pgOQ
+
+
+
+
+
+
+
+
+
+#- https://www.youtube.com/watch?v=T_yHQbZ4hF0
 #- https://www.youtube.com/watch?v=l8Po2CyWZag
 #- https://www.youtube.com/watch?v=uX536ECdb94
 #- https://www.youtube.com/watch?v=kjB9kHT9PkM
@@ -10,6 +18,14 @@
 #- https://www.youtube.com/watch?v=5kWuXbiQ2zY
 
 
-- https://www.youtube.com/watch?v=-5zFZznthw0
-- https://www.youtube.com/watch?v=B3rSU7XROrg
-- https://www.youtube.com/watch?v=4u48pDYxfHc
+
+#- https://www.youtube.com/watch?v=mldfMWbnZTg
+
+#- https://www.youtube.com/watch?v=xZX4KHrqwhM
+#- https://www.youtube.com/watch?v=-5zFZznthw0
+#- https://www.youtube.com/watch?v=B3rSU7XROrg
+#- https://www.youtube.com/watch?v=jW89fT_pgOQ
+#- https://www.youtube.com/watch?v=W3cIo4xcrWo
+#- https://www.youtube.com/watch?v=POLFZdG54Kw
+#- https://www.youtube.com/watch?v=4u48pDYxfHc
+#- https://www.youtube.com/watch?v=l8Po2CyWZag

@@ -108,7 +108,7 @@ def fetch_transcript_en(video_id: str, cookies_path: Optional[str] = None) -> Tu
                 if not s or s.startswith("WEBVTT") or "-->" in s or s.isdigit():
                     continue
                 lines.append(s)
-            return "\n".join(lines)
+            return " ".join(lines).replace('\n', ' ')
         except Exception:
             return None
 
@@ -126,8 +126,8 @@ def fetch_transcript_en(video_id: str, cookies_path: Optional[str] = None) -> Tu
             transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
             
         fetched = transcript.fetch()
-        text = "\n".join([item.text for item in fetched])
-        return text, publish_date
+        text = " ".join([item.text for item in fetched])
+        return text.replace('\n', ' '), publish_date
     except Exception:
         pass
 
@@ -221,8 +221,8 @@ def fetch_transcript_en(video_id: str, cookies_path: Optional[str] = None) -> Tu
                 transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
             
             fetched = transcript.fetch()
-            text = "\n".join([item.text for item in fetched])
-            return text, publish_date
+            text = " ".join([item.text for item in fetched])
+            return text.replace('\n', ' '), publish_date
         except Exception:
             pass
 
@@ -258,12 +258,12 @@ def fetch_transcript_en(video_id: str, cookies_path: Optional[str] = None) -> Tu
                     troot = ET.fromstring(tr.text)
                     texts = []
                     for node in troot.findall('.//text'):
-                        t = (node.text or '').strip()
-                        if t:
-                            texts.append(t)
+                        if node.text:
+                            texts.append(node.text)
                     if texts:
-                        return "\n".join(texts), publish_date
-                except ET.ParseError:
+                        text = " ".join(texts)
+                        return text.replace('\n', ' '), publish_date
+                except Exception:
                     pass
         
         for lang in ("en", "en-US", "en-GB"):
@@ -368,7 +368,7 @@ def verify_firestore_update(db, video_id: str) -> Tuple[bool, str]:
     if not db:
         return False, "No DB connection"
     try:
-        doc = db.collection("processed_videos").document(video_id).get()
+        doc = db.collection("video_status").document(video_id).get()
         if not doc.exists:
             return False, "Document not found"
         
@@ -430,12 +430,28 @@ def process_video(engine_resource: str, project: str, location: str, video_id: s
     agent = reasoning_engines.ReasoningEngine(engine_resource)
     prompt = (
         f"Here is the transcript for video {video_id}:\n{transcript_text}\n\n"
-        f"Analyze the provided transcript to identify the Core Thesis and Key Concepts. "
-        f"Also identify the best anthology theme for this video. Examples: 'AI Strategy & Leadership', 'Agentic Architectures & Systems', 'AI Engineering & Coding', 'Future of Work & Society'. "
-        f"IMPORTANT: Do NOT save the transcript to the anthology. I will handle saving. "
-        f"OUTPUT ONLY THE ANALYSIS. DO NOT CALL ANY TOOLS. I WILL FIRE YOU IF YOU CALL SAVE.\n"
+        f"**Role and Goal:**\n"
+        f"You are an expert AI strategist and a critical analyst, acting as my research partner. Your primary function is to distill the core, non-obvious insights from the provided transcript. You are not a generic summarizer. Your goal is to create a high-signal, information-dense summary that captures the true 'gems of wisdom' from the talk, not just a list of topics.\n\n"
+        f"**Your Guiding Principles (Analyze through this lens):**\n"
+        f"- **First-Principles Thinking:** Prioritize insights that connect practical advice back to underlying theoretical concepts (e.g., information theory, computational complexity, cognitive science).\n"
+        f"- **Pragmatic Engineering over Hype:** Focus on actionable, real-world strategies for building robust systems, especially those that challenge marketing hype or simplistic narratives.\n"
+        f"- **Mental Models & Frameworks:** Identify and extract novel analogies or structured frameworks that provide a new way to think about a problem.\n"
+        f"- **Counter-Intuitive Findings:** Highlight insights that go against common wisdom or reveal a surprising truth about AI behavior.\n\n"
+        f"**Predefined Categories:**\n"
+        f"1. **AI Strategy & Leadership:** For content focused on business integration, change management, ROI, organizational structure, and high-level strategic planning for AI.\n"
+        f"2. **Prompt & Context Engineering:** For content focused on the practical craft of prompting, context window management, chunking strategies, and specific techniques (e.g., RAG, Metaprompting).\n"
+        f"3. **Agentic Architectures & Systems:** For content focused on the design of AI agents, tool use, memory systems, protocols like MCP, and hybrid architectures.\n"
+        f"4. **Model Analysis & Limitations:** For content focused on the analysis of specific AI models, their underlying mechanisms, theoretical limitations, and core AI theory.\n"
+        f"5. **Market Analysis & Future Trends:** For content focused on the broader AI market, competitive landscape, emerging technologies, and future predictions for the industry.\n"
+        f"6. **News & Weekly Recap:** For news roundups, weekly recaps, and time-sensitive updates.\n"
+        f"7. **Uncategorized:** If the document does not clearly fit into any of the above categories.\n\n"
+        f"**Task:**\n"
+        f"1. Analyze the transcript through the Guiding Principles.\n"
+        f"2. Classify the video into ONE of the Predefined Categories.\n"
+        f"IMPORTANT: Do NOT save the transcript to the anthology. I will handle saving.\n"
+        f"OUTPUT ONLY THE ANALYSIS. DO NOT CALL ANY TOOLS. I WILL FIRE YOU IF YOU CALL SAVE.\n\n"
         f"OUTPUT FORMAT:\n"
-        f"THEME: [Theme Name]\n"
+        f"THEME: [Exact Category Name]\n"
         f"CONTENT:\n"
         f"## Core Thesis\n[Analysis]\n\n"
         f"## Key Concepts\n[Analysis]"

@@ -1,17 +1,18 @@
-Run started at: 2025-12-05T22:57:02.318756
+Run started at: 2025-12-06T11:24:53.654023
 ============================================================
 VIDEO ID        | STEP                      | STATUS     | DETAILS
 ------------------------------------------------------------
+T_yHQbZ4hF0     | Check Firestore           | SKIP       | Already COMPLETED
 xZX4KHrqwhM     | Fetch Date                | PASS       | 2025-06-23
 xZX4KHrqwhM     | Agent Processing          | PASS       | Analyzed & Saved Locally
-xZX4KHrqwhM     | Anthology File            | INFO       | ai-engineering-coding.md
-xZX4KHrqwhM     | Verify Anthology          | PASS       | Found in ai-engineering-coding.md
+xZX4KHrqwhM     | Anthology File            | INFO       | agentic-architectures-systems.md
+xZX4KHrqwhM     | Verify Anthology          | PASS       | Found in agentic-architectures-systems.md
 xZX4KHrqwhM     | Verify GCS File           | PASS       | Verified
 xZX4KHrqwhM     | Verify Firestore          | PASS       | Status is COMPLETED
 -5zFZznthw0     | Fetch Date                | PASS       | 2025-12-05
 -5zFZznthw0     | Agent Processing          | PASS       | Analyzed & Saved Locally
--5zFZznthw0     | Anthology File            | INFO       | ai-strategy-leadership.md
--5zFZznthw0     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md
+-5zFZznthw0     | Anthology File            | INFO       | model-analysis-limitations.md
+-5zFZznthw0     | Verify Anthology          | PASS       | Found in model-analysis-limitations.md
 -5zFZznthw0     | Verify GCS File           | PASS       | Verified
 -5zFZznthw0     | Verify Firestore          | PASS       | Status is COMPLETED
 B3rSU7XROrg     | Fetch Date                | PASS       | 2025-12-04
@@ -20,9 +21,9 @@ B3rSU7XROrg     | Anthology File            | INFO       | ai-strategy-leadershi
 B3rSU7XROrg     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md
 B3rSU7XROrg     | Verify GCS File           | PASS       | Verified
 B3rSU7XROrg     | Verify Firestore          | PASS       | Status is COMPLETED
-4u48pDYxfHc     | Fetch Date                | PASS       | 2025-12-03
-4u48pDYxfHc     | Agent Processing          | PASS       | Analyzed & Saved Locally
-4u48pDYxfHc     | Anthology File            | INFO       | ai-engineering-coding.md
-4u48pDYxfHc     | Verify Anthology          | PASS       | Found in ai-engineering-coding.md
-4u48pDYxfHc     | Verify GCS File           | PASS       | Verified
-4u48pDYxfHc     | Verify Firestore          | PASS       | Status is COMPLETED
+jW89fT_pgOQ     | Fetch Date                | PASS       | 2025-06-19
+jW89fT_pgOQ     | Agent Processing          | PASS       | Analyzed & Saved Locally
+jW89fT_pgOQ     | Anthology File            | INFO       | model-analysis-limitations.md
+jW89fT_pgOQ     | Verify Anthology          | PASS       | Found in model-analysis-limitations.md
+jW89fT_pgOQ     | Verify GCS File           | PASS       | Verified
+jW89fT_pgOQ     | Verify Firestore          | PASS       | Status is COMPLETED

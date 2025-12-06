@@ -532,14 +532,11 @@ def main():
 
             # Parse response
             resp_text = ""
-            summary_lines.append(f"DEBUG: Raw Response Type: {type(resp)}")
             
             if isinstance(resp, dict):
-                summary_lines.append(f"DEBUG: Response Keys: {list(resp.keys())}")
                 
                 if "response" in resp:
                     val = resp["response"]
-                    summary_lines.append(f"DEBUG: 'response' value type: {type(val)}")
                     
                     # Handle stringified list/dict (e.g. "[{'text': ...}]")
                     if isinstance(val, str):
@@ -548,9 +545,8 @@ def main():
                             try:
                                 import ast
                                 val = ast.literal_eval(val)
-                                summary_lines.append(f"DEBUG: Parsed stringified value to: {type(val)}")
                             except Exception as e:
-                                summary_lines.append(f"DEBUG: Failed to parse stringified value: {e}")
+                                pass
 
                     # Handle list (e.g. [{'text': '...', ...}])
                     if isinstance(val, list) and len(val) > 0:
@@ -596,7 +592,7 @@ def main():
                  resp_text = str(resp)
 
             # Log debug info (minimal)
-            summary_lines.append(f"DEBUG: Parsed Response Length: {len(resp_text)}")
+            # summary_lines.append(f"DEBUG: Parsed Response Length: {len(resp_text)}")
             
             # Parse THEME and CONTENT
             # Regex needs to be robust. Stop at newline or "CONTENT:"

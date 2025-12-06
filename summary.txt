@@ -1,14 +1,13 @@
-Run started at: 2025-12-05T12:08:50.210848
+Run started at: 2025-12-05T21:38:22.148723
 ============================================================
 VIDEO ID        | STEP                      | STATUS     | DETAILS
 ------------------------------------------------------------
 xZX4KHrqwhM     | Fetch Date                | PASS       | 2025-06-23
-xZX4KHrqwhM     | Verify GCS File           | PASS       | Verified
 DEBUG: Raw Response Type: <class 'dict'>
 DEBUG: Response Keys: ['response']
 DEBUG: 'response' value type: <class 'str'>
 DEBUG: Parsed stringified value to: <class 'list'>
-DEBUG: Parsed Response Length: 14766
+DEBUG: Parsed Response Length: 2715
 xZX4KHrqwhM     | Agent Processing          | PASS       | Analyzed & Saved Locally
 xZX4KHrqwhM     | Anthology File            | INFO       | ai-strategy-leadership.md
 xZX4KHrqwhM     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md

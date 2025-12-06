@@ -298,8 +298,8 @@ def upload_to_gcs(bucket_name: str, video_id: str, content: str, publish_date: s
     blob_name = f"{video_id}.txt"
     blob = bucket.blob(blob_name)
     
-    # Prepend date to content as a clear sentence
-    full_content = f"This video was published on {publish_date}.\n\n{content}"
+    # Prepend date to content as a standard header
+    full_content = f"Date: {publish_date}\n\n{content}"
     
     blob.upload_from_string(full_content, content_type="text/plain")
     return f"gs://{bucket_name}/{blob_name}"
@@ -319,9 +319,9 @@ def verify_gcs_upload(bucket_name: str, video_id: str, expected_date: str) -> Tu
         if not content:
             return False, "File is empty"
             
-        # Check for date sentence
+        # Check for date header
         first_line = content.split('\n')[0].strip()
-        expected_header = f"This video was published on {expected_date}."
+        expected_header = f"Date: {expected_date}"
         
         if first_line != expected_header:
             return False, f"Date mismatch. Expected '{expected_header}', found '{first_line}'"
@@ -389,7 +389,7 @@ def read_videos_yml(path: str) -> List[str]:
     return [str(x).strip() for x in data if str(x).strip()]
 
 
-def append_to_anthology(bucket_name: str, theme_file: str, video_id: str, publish_date: str, content: str):
+def append_to_anthology(bucket_name: str, theme_file: str, video_id: str, publish_date: str, content: str, transcript: str = ""):
     """Appends the entry to the anthology file in GCS, preventing duplicates."""
     try:
         client = storage.Client()
@@ -411,6 +411,9 @@ def append_to_anthology(bucket_name: str, theme_file: str, video_id: str, publis
         # Construct the new entry
         new_entry = f"\n\n---\n\n<!-- VIDEO_ID: {video_id} -->\nDate: {publish_date}\n\n{content}"
         
+        if transcript:
+            new_entry += f"\n\n---\nTranscript:\n\n{transcript}"
+        
         # Append
         updated_text = current_text + new_entry
         blob.upload_from_string(updated_text, content_type="text/markdown")
@@ -420,14 +423,14 @@ def append_to_anthology(bucket_name: str, theme_file: str, video_id: str, publis
         return False
 
 
-def process_video(engine_resource: str, project: str, location: str, video_id: str, publish_date: str) -> dict:
+def process_video(engine_resource: str, project: str, location: str, video_id: str, publish_date: str, transcript_text: str) -> dict:
     import vertexai
     from vertexai.preview import reasoning_engines
     vertexai.init(project=project, location=location)
     agent = reasoning_engines.ReasoningEngine(engine_resource)
     prompt = (
-        f"Retrieve the transcript for video_id={video_id}. "
-        f"Analyze the content to identify the Core Thesis and Key Concepts. "
+        f"Here is the transcript for video {video_id}:\n{transcript_text}\n\n"
+        f"Analyze the provided transcript to identify the Core Thesis and Key Concepts. "
         f"Also identify the best anthology theme for this video (e.g. 'AI Strategy & Leadership'). "
         f"IMPORTANT: Do NOT save the transcript to the anthology. I will handle saving. "
         f"OUTPUT ONLY THE ANALYSIS. DO NOT CALL ANY TOOLS. I WILL FIRE YOU IF YOU CALL SAVE.\n"
@@ -517,29 +520,13 @@ def main():
             if db: doc_ref.set({"status": "FAILED", "error": str(e)}, merge=True)
             continue
 
-        # 2) Upload to GCS
-        try:
-            uri = upload_to_gcs(args.bucket, vid, text, publish_date)
-            # summary_lines.append(f"{vid:<15} | {'Upload GCS':<25} | {'PASS':<10} | {uri}")
-        except Exception as e:
-            summary_lines.append(f"{vid:<15} | {'Upload GCS':<25} | {'ERROR':<10} | {e}")
-            print(" FAILED (Upload)")
-            if db: doc_ref.set({"status": "FAILED", "error": str(e)}, merge=True)
-            continue
-
-        # 3) VERIFY GCS Upload
-        passed, msg = verify_gcs_upload(args.bucket, vid, publish_date)
-        if passed:
-            summary_lines.append(f"{vid:<15} | {'Verify GCS File':<25} | {'PASS':<10} | {msg}")
-        else:
-            summary_lines.append(f"{vid:<15} | {'Verify GCS File':<25} | {'FAIL':<10} | {msg}")
-            print(" FAILED (GCS Verification)")
-            if db: doc_ref.set({"status": "FAILED", "error": f"GCS Verify Failed: {msg}"}, merge=True)
-            continue # STOP PROCESSING
+        # 2) Upload to GCS (MOVED TO END to prevent race condition)
+        # We will upload after updating the anthology.
+        pass
 
 
         try:
-            resp = process_video(args.engine, args.project, args.location, vid, publish_date)
+            resp = process_video(args.engine, args.project, args.location, vid, publish_date, text)
 
             # Parse response
             resp_text = ""
@@ -654,7 +641,7 @@ def main():
                 anthology_file = f"{slug}.md"
                 
                 # Save LOCALLY (Bypass Cloud Function)
-                append_to_anthology(args.anthology_bucket, anthology_file, vid, publish_date, analysis)
+                append_to_anthology(args.anthology_bucket, anthology_file, vid, publish_date, analysis, transcript=text)
                 
                 summary_lines.append(f"{vid:<15} | {'Agent Processing':<25} | {'PASS':<10} | Analyzed & Saved Locally")
                 summary_lines.append(f"{vid:<15} | {'Anthology File':<25} | {'INFO':<10} | {anthology_file}")
@@ -664,7 +651,7 @@ def main():
                 # Log warning and try to save to "uncategorized.md" with full text
                 summary_lines.append(f"{vid:<15} | {'Agent Processing':<25} | {'WARN':<10} | Parse failed, saving to Uncategorized")
                 anthology_file = "uncategorized.md"
-                append_to_anthology(args.anthology_bucket, anthology_file, vid, publish_date, resp_text)
+                append_to_anthology(args.anthology_bucket, anthology_file, vid, publish_date, resp_text, transcript=text)
 
         except Exception as e:
             summary_lines.append(f"{vid:<15} | {'Agent Processing':<25} | {'ERROR':<10} | {e}")

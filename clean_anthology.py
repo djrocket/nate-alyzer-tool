@@ -3,7 +3,7 @@ import re
 from google.cloud import storage
 
 BUCKET = "nate-digital-twin-anthologies-djr"
-FILE = "uncategorized.md"
+FILE = "ai-strategy-leadership.md"
 VIDEO_ID = "xZX4KHrqwhM"
 
 def clean_gcs_file():

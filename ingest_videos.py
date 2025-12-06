@@ -412,7 +412,7 @@ def append_to_anthology(bucket_name: str, theme_file: str, video_id: str, publis
         new_entry = f"\n\n---\n\n<!-- VIDEO_ID: {video_id} -->\nDate: {publish_date}\n\n{content}"
         
         if transcript:
-            new_entry += f"\n\n---\nTranscript:\n\n{transcript}"
+            new_entry += f"\n\n---\n{transcript}"
         
         # Append
         updated_text = current_text + new_entry
@@ -436,7 +436,9 @@ def process_video(engine_resource: str, project: str, location: str, video_id: s
         f"OUTPUT ONLY THE ANALYSIS. DO NOT CALL ANY TOOLS. I WILL FIRE YOU IF YOU CALL SAVE.\n"
         f"OUTPUT FORMAT:\n"
         f"THEME: [Theme Name]\n"
-        f"CONTENT:\n[Your Analysis Here]"
+        f"CONTENT:\n"
+        f"## Core Thesis\n[Analysis]\n\n"
+        f"## Key Concepts\n[Analysis]"
     )
     return agent.query(prompt=prompt)
 

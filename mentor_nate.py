@@ -6,14 +6,16 @@ import vertexai
 from vertexai.generative_models import GenerativeModel, ChatSession, Content, Part
 
 # Configuration
-PROJECT_ID = "nate-digital-twin"  # Using the project ID from ingest_videos.py
+PROJECT_ID = "nate-digital-twin"
 LOCATION = "us-central1"
-MODEL_NAME = "gemini-2.5-flash" # Using generic tag to resolve latest available
-ANTHOLOGY_DIR = r"c:\AI\nate-alyzer-tool"
+MODEL_NAME = "gemini-2.5-flash" 
+ANTHOLOGY_BUCKET = "nate-digital-twin-anthologies-djr"
 
-def load_anthologies(directory: str) -> str:
+from google.cloud import storage
+
+def load_anthologies(bucket_name: str) -> str:
     """
-    Reads all markdown anthology files from the directory.
+    Reads all markdown anthology files from the GCS bucket.
     Constructs a single massive context string.
     """
     context_parts = []
@@ -21,21 +23,29 @@ def load_anthologies(directory: str) -> str:
     # Simple exclusion list
     excludes = ["README.md", "task.md", "implementation_plan.md", "summary.txt"]
     
-    files = glob.glob(os.path.join(directory, "*.md"))
+    print(f"Loading knowledge base from GCS bucket: {bucket_name}...")
     
-    print(f"Loading knowledge base from {directory}...")
+    try:
+        storage_client = storage.Client(project=PROJECT_ID)
+        bucket = storage_client.bucket(bucket_name)
+        blobs = list(bucket.list_blobs())
+    except Exception as e:
+        print(f"CRITICAL ERROR connecting to GCS: {e}")
+        return ""
     
-    for file_path in files:
-        filename = os.path.basename(file_path)
-        if filename in excludes or filename.startswith("!"): # simplistic skip
+    for blob in blobs:
+        filename = blob.name
+        if not filename.endswith(".md"):
+            continue
+            
+        if filename in excludes or filename.startswith("!"): 
             continue
             
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-                # Decorate content with filename for the model to know the source
-                context_parts.append(f"--- START FILE: {filename} ---\n{content}\n--- END FILE: {filename} ---\n")
-                print(f"  - Loaded: {filename}")
+            content = blob.download_as_text()
+            # Decorate content with filename for the model to know the source
+            context_parts.append(f"--- START FILE: {filename} ---\n{content}\n--- END FILE: {filename} ---\n")
+            print(f"  - Loaded: {filename}")
         except Exception as e:
             print(f"  - Error loading {filename}: {e}")
             
@@ -128,7 +138,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run the Mentor Nate agent.")
     parser.add_argument("--project", default=PROJECT_ID, help="Google Cloud Project ID")
     parser.add_argument("--location", default=LOCATION, help="Vertex AI Location")
-    parser.add_argument("--path", default=ANTHOLOGY_DIR, help="Path to anthology folder")
+    parser.add_argument("--bucket", default=ANTHOLOGY_BUCKET, help="GCS Bucket for anthologies")
     parser.add_argument("--prompt", help="Run in non-interactive mode with this prompt")
     args = parser.parse_args()
 
@@ -140,7 +150,7 @@ def main():
          return
     
     # 1. Load Knowledge
-    kb_text = load_anthologies(args.path)
+    kb_text = load_anthologies(args.bucket)
     if not kb_text:
         print("CRITICAL ERROR: No anthology files found. Cannot exist without knowledge.")
         return

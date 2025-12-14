@@ -1,12 +1,7 @@
-Run started at: 2025-12-13T16:19:05.324964
+Run started at: 2025-12-13T21:14:47.944226
 ============================================================
 VIDEO ID        | STEP                      | STATUS     | DETAILS
 ------------------------------------------------------------
-xNcEgqzlPqs     | Fetch Date                | PASS       | 2025-12-08
-xNcEgqzlPqs     | Agent Processing          | PASS       | Analyzed & Saved Locally
-xNcEgqzlPqs     | Anthology File            | INFO       | agentic-architectures-systems.md
-xNcEgqzlPqs     | Verify Anthology          | PASS       | Found in agentic-architectures-systems.md
-xNcEgqzlPqs     | Verify GCS File           | PASS       | Verified
-xNcEgqzlPqs     | Verify Firestore          | PASS       | Status is COMPLETED
+xNcEgqzlPqs     | Check Firestore           | SKIP       | Already COMPLETED
 UrJdtQgXnCw     | Check Firestore           | SKIP       | Already COMPLETED
 T_yHQbZ4hF0     | Check Firestore           | SKIP       | Already COMPLETED

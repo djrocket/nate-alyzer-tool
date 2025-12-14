@@ -119,7 +119,7 @@ class YouTubeFetcher:
             transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
         
         fetched = transcript.fetch()
-        return " ".join([item['text'] for item in fetched]).replace('\n', ' ')
+        return " ".join([item.text for item in fetched]).replace('\n', ' ')
 
     def _fetch_ytdlp(self, video_id: str, cookies_path: Optional[str], client: str) -> Optional[str]:
         # Only run if client is 'android' (no cookies needed usually) or 'web' (needs cookies usually)

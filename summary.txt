@@ -1,34 +1,12 @@
-Run started at: 2025-12-13T15:58:27.490053
+Run started at: 2025-12-13T16:19:05.324964
 ============================================================
 VIDEO ID        | STEP                      | STATUS     | DETAILS
 ------------------------------------------------------------
-pEsoqm0o3Dk     | Fetch Date                | PASS       | 2025-12-13
-pEsoqm0o3Dk     | Agent Processing          | PASS       | Analyzed & Saved Locally
-pEsoqm0o3Dk     | Anthology File            | INFO       | news-weekly-recap.md
-pEsoqm0o3Dk     | Verify Anthology          | PASS       | Found in news-weekly-recap.md
-pEsoqm0o3Dk     | Verify GCS File           | PASS       | Verified
-pEsoqm0o3Dk     | Verify Firestore          | PASS       | Status is COMPLETED
-821UqXHineU     | Fetch Date                | PASS       | 2025-12-12
-821UqXHineU     | Agent Processing          | PASS       | Analyzed & Saved Locally
-821UqXHineU     | Anthology File            | INFO       | agentic-architectures-systems.md
-821UqXHineU     | Verify Anthology          | PASS       | Found in agentic-architectures-systems.md
-821UqXHineU     | Verify GCS File           | PASS       | Verified
-821UqXHineU     | Verify Firestore          | PASS       | Status is COMPLETED
-Td_q0sHm6HU     | Fetch Date                | PASS       | 2025-12-11
-Td_q0sHm6HU     | Agent Processing          | PASS       | Analyzed & Saved Locally
-Td_q0sHm6HU     | Anthology File            | INFO       | ai-strategy-leadership.md
-Td_q0sHm6HU     | Verify Anthology          | PASS       | Found in ai-strategy-leadership.md
-Td_q0sHm6HU     | Verify GCS File           | PASS       | Verified
-Td_q0sHm6HU     | Verify Firestore          | PASS       | Status is COMPLETED
-518QPRWlRW0     | Fetch Date                | PASS       | 2025-12-10
-518QPRWlRW0     | Agent Processing          | PASS       | Analyzed & Saved Locally
-518QPRWlRW0     | Anthology File            | INFO       | market-analysis-future-trends.md
-518QPRWlRW0     | Verify Anthology          | PASS       | Found in market-analysis-future-trends.md
-518QPRWlRW0     | Verify GCS File           | PASS       | Verified
-518QPRWlRW0     | Verify Firestore          | PASS       | Status is COMPLETED
-Udc19q1o6Mg     | Fetch Date                | PASS       | 2025-12-09
-Udc19q1o6Mg     | Agent Processing          | PASS       | Analyzed & Saved Locally
-Udc19q1o6Mg     | Anthology File            | INFO       | agentic-architectures-systems.md
-Udc19q1o6Mg     | Verify Anthology          | PASS       | Found in agentic-architectures-systems.md
-Udc19q1o6Mg     | Verify GCS File           | PASS       | Verified
-Udc19q1o6Mg     | Verify Firestore          | PASS       | Status is COMPLETED
+xNcEgqzlPqs     | Fetch Date                | PASS       | 2025-12-08
+xNcEgqzlPqs     | Agent Processing          | PASS       | Analyzed & Saved Locally
+xNcEgqzlPqs     | Anthology File            | INFO       | agentic-architectures-systems.md
+xNcEgqzlPqs     | Verify Anthology          | PASS       | Found in agentic-architectures-systems.md
+xNcEgqzlPqs     | Verify GCS File           | PASS       | Verified
+xNcEgqzlPqs     | Verify Firestore          | PASS       | Status is COMPLETED
+UrJdtQgXnCw     | Check Firestore           | SKIP       | Already COMPLETED
+T_yHQbZ4hF0     | Check Firestore           | SKIP       | Already COMPLETED

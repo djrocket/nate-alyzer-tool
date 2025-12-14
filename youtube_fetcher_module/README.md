@@ -4,6 +4,21 @@ A robust, multi-strategy YouTube transcript fetcher designed for high availabili
 
 ## Installation
 
+It is recommended to use a virtual environment:
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate it
+# Windows:
+.\.venv\Scripts\activate
+# Mac/Linux:
+source .venv/bin/activate
+```
+
+Then install the package:
+
 ```bash
 pip install -r requirements.txt
 pip install .
@@ -11,24 +26,28 @@ pip install .
 
 ## Usage
 
+### Simple One-Liner (Recommended)
+
+```python
+from youtube_fetcher import yt_fetch
+
+# Returns string: "Date: YYYY-MM-DD\n\n[Content]"
+content = yt_fetch("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+if content:
+    print(content)
+else:
+    print("Failed to fetch.")
+```
+
+### Advanced Usage (Client Class)
+
 ```python
 from youtube_fetcher import YouTubeFetcher
-
 fetcher = YouTubeFetcher()
 
-# Simple Fetch
-url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-transcript, date = fetcher.get_transcript(url)
-
-if transcript:
-    print(f"Published on: {date}")
-    print(f"Transcript: {transcript[:100]}...")
-else:
-    print("Failed to fetch transcript.")
-
-# Authenticated Fetch (Use cookies.txt to bypass age-gating or strict blocks)
-# Export cookies.txt from your browser using an extension like 'Get cookies.txt LOCALLY'
-transcript, date = fetcher.get_transcript(url, cookies_path="cookies.txt")
+# Returns tuple: (transcript_str, date_str)
+transcript, date = fetcher.get_transcript("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 ```
 
 ## Strategies Used

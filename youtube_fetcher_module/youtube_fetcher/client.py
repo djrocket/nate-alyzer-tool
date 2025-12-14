@@ -9,8 +9,8 @@ from typing import Tuple, Optional, List
 import yt_dlp
 from youtube_transcript_api import YouTubeTranscriptApi
 
+
 # Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class YouTubeFetcher:
@@ -61,7 +61,8 @@ class YouTubeFetcher:
         # 2. Try Fetching Transcript Strategies
         strategies = [
             ("YouTubeTranscriptApi (No Cookies)", lambda: self._fetch_api(video_id, None)),
-            ("yt-dlp Android Client", lambda: self._fetch_ytdlp(video_id, cookies_path, client="android")),
+            ("yt-dlp Android Client (No Cookies)", lambda: self._fetch_ytdlp(video_id, None, client="android")),
+            ("yt-dlp Android Client (With Cookies)", lambda: self._fetch_ytdlp(video_id, cookies_path, client="android")),
             ("yt-dlp Web Client", lambda: self._fetch_ytdlp(video_id, cookies_path, client="web")),
             ("YouTubeTranscriptApi (With Cookies)", lambda: self._fetch_api(video_id, cookies_path)),
             ("Manual TimedText API", lambda: self._fetch_manual(video_id))
@@ -75,7 +76,7 @@ class YouTubeFetcher:
             try:
                 content = strategy()
                 if content:
-                    logger.info(f"Success using strategy: {name}")
+                    logger.debug(f"Success using strategy: {name}")
                     return content, publish_date
             except Exception as e:
                 logger.debug(f"Strategy {name} failed: {e}")
@@ -151,13 +152,54 @@ class YouTubeFetcher:
         try:
             with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 vtt = f.read()
-            lines = []
+            
+            # First pass: Filter headers and strip tags line-by-line
+            content_lines = []
             for line in vtt.splitlines():
                 s = line.strip()
-                if not s or s.startswith("WEBVTT") or "-->" in s or s.isdigit():
-                    continue
-                lines.append(s)
-            return " ".join(lines).replace('\n', ' ')
+                # Skip headers and metadata
+                if not s: continue
+                if s.startswith("WEBVTT"): continue
+                if s.startswith("Kind:"): continue
+                if s.startswith("Language:"): continue
+                if "-->" in s: continue
+                if s.isdigit(): continue
+                
+                # Strip tags from the line immediately
+                # Remove all tags (e.g. <00:00:00.320>, <c>, </c>)
+                cleaned_s = re.sub(r'<[^>]+>', '', s)
+                
+                # Normalize whitespace
+                cleaned_s = re.sub(r'\s+', ' ', cleaned_s).strip()
+                
+                if cleaned_s:
+                    content_lines.append(cleaned_s)
+            
+            # Second pass: Deduplicate lines (handling rolling captions)
+            # Now we are comparing pure content, ignoring timestamps
+            final_lines = []
+            if content_lines:
+                last_line = content_lines[0]
+                final_lines.append(last_line)
+                
+                for i in range(1, len(content_lines)):
+                    line = content_lines[i]
+                    
+                    if line == last_line:
+                        continue
+                    
+                    # Prefix check for rolling captions
+                    if line.startswith(last_line) and len(line) > len(last_line):
+                        final_lines.pop()
+                        final_lines.append(line)
+                        last_line = line
+                        continue
+                        
+                    final_lines.append(line)
+                    last_line = line
+            
+            text = " ".join(final_lines)
+            return html.unescape(text)
         except Exception:
             return None
 

@@ -9,36 +9,40 @@ Use this module `youtube_fetcher` whenever you need to retrieve the transcript (
 
 ## How to Use (Code Pattern)
 
-Always use this exact pattern to ensure robust fetching:
+### Primary Method: `yt_fetch` (Standard Format)
+
+Use this for most tasks. It returns a formatted string containing the date and content.
+
+```python
+from youtube_fetcher import yt_fetch
+import os
+
+url = "YOUR_VIDEO_URL_HERE"
+# Always use cookies if available
+cookies = "cookies.txt" if os.path.exists("cookies.txt") else None
+
+# Returns: "Date: YYYY-MM-DD\n\n[Transcript Text]"
+result = yt_fetch(url, cookies_path=cookies)
+
+if result:
+    print(result) # Ready for analysis or saving
+else:
+    print("Failed to fetch transcript.")
+```
+
+### Low-Level Method: `YouTubeFetcher`
+
+Use this if you need the date and transcript separated (e.g., for structured data entry).
 
 ```python
 from youtube_fetcher import YouTubeFetcher
-import os
 
-# 1. Initialize
 fetcher = YouTubeFetcher()
-
-# 2. Define Inputs
-video_url = "YOUR_VIDEO_URL_HERE"
-# Optional: Use cookies if available in the workspace for better success rates
-cookies = "cookies.txt" if os.path.exists("cookies.txt") else None
-
-# 3. Fetch
-transcript, publish_date = fetcher.get_transcript(video_url, cookies_path=cookies)
-
-# 4. Handle Result
-if transcript:
-    # SUCCESS
-    # 'publish_date' will be "YYYY-MM-DD" or "unknown"
-    # 'transcript' is a single string of cleaning text (no timestamps)
-    print(f"Video published: {publish_date}")
-    print(f"Content: {transcript}")
-else:
-    # FAILURE
-    print("Could not retrieve transcript. The video might be private, deleted, or no English captions exist.")
+transcript, date = fetcher.get_transcript(url, cookies_path=cookies)
+# date is "YYYY-MM-DD" or "unknown"
+# transcript is the raw text string
 ```
 
 ## Critical Notes
-- **Return Values**: `get_transcript` returns a tuple `(text, date)`. `text` is `None` on failure.
-- **Cookies**: If the user provides a `cookies.txt` file, ALWAYS pass it. It significantly improves success rates against YouTube's bot detection.
+- **Cookies**: If the user provides a `cookies.txt` file, ALWAYS pass it to improve success rates.
 - **Language**: This module currently defaults to fetching **English** (en, en-US, en-GB) transcripts only.
